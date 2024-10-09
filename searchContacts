@@ -1,0 +1,21 @@
+
+
+
+private void searchContacts() {
+    String search = searchField.getText().trim().toLowerCase();
+    if (!search.isEmpty()) {
+        DefaultListModel<Contact> filteredModel = new DefaultListModel<>();
+        for (int i = 0; i < contactListModel.size(); i++) {
+            Contact contact = contactListModel.get(i);
+            if (contact.toString().toLowerCase().contains(search)) {
+                filteredModel.addElement(contact);
+            }
+        }
+        contactList.setModel(filteredModel);
+        if (filteredModel.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Contact not found.");
+        }
+    } else {
+        contactList.setModel(contactListModel); // reset to all contacts if search is empty
+    }
+}
