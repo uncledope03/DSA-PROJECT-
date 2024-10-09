@@ -1,23 +1,18 @@
-This is the whole code copy it and run it on your netbeans
-
-
-package phonebook;
+ package phonebook;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Phonebook implements ActionListener {
 
     private JFrame frame;
     private JTextField nameField, phoneField, searchField;
-    private JTextArea contactDisplayArea;
-    private DefaultListModel<Contact> contactListModel;
-    private JTabbedPane tabbedPane;
+    private ArrayList<Contact> contacts;
     private JList<Contact> contactList;
-    private JScrollPane scrollPane;
+    private DefaultListModel<Contact> contactListModel;
 
     public Phonebook() {
         // Initialize the frame
@@ -30,23 +25,36 @@ public class Phonebook implements ActionListener {
         nameField = new JTextField(15);
         phoneField = new JTextField(15);
         searchField = new JTextField(15);
-        contactDisplayArea = new JTextArea(10, 30);
-        contactDisplayArea.setEditable(false);
-        contactDisplayArea.setBackground(Color.WHITE);
-        contactDisplayArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
+        contacts = new ArrayList<>();
         contactListModel = new DefaultListModel<>();
         contactList = new JList<>(contactListModel);
         contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        scrollPane = new JScrollPane(contactList);
+        JScrollPane scrollPane = new JScrollPane(contactList);
 
         // Create tabbed pane
-        tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
 
         // Tab for adding contacts
-        JPanel addPanel = new JPanel();
+        JPanel addPanel = createAddPanel();
+        tabbedPane.addTab("Add Contact", addPanel);
+
+        // Tab for viewing and searching contacts
+        JPanel viewPanel = createViewPanel(scrollPane);
+        tabbedPane.addTab("View/Search", viewPanel);
+
+        // Tab for updating and deleting contacts
+        JPanel updatePanel = createUpdatePanel();
+        tabbedPane.addTab("Update/Delete", updatePanel);
+
+        // Add tabbed pane to frame
+        frame.add(tabbedPane, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
+
+    private JPanel createAddPanel() {
+        JPanel addPanel = new JPanel(new GridBagLayout());
         addPanel.setBackground(Color.WHITE);
-        addPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -70,12 +78,12 @@ public class Phonebook implements ActionListener {
         gbc.gridy = 2;
         addPanel.add(addButton, gbc);
 
-        tabbedPane.addTab("Add Contact", addPanel);
+        return addPanel;
+    }
 
-        // Tab for viewing and searching contacts
-        JPanel viewPanel = new JPanel();
+    private JPanel createViewPanel(JScrollPane scrollPane) {
+        JPanel viewPanel = new JPanel(new BorderLayout());
         viewPanel.setBackground(Color.WHITE);
-        viewPanel.setLayout(new BorderLayout());
 
         JPanel searchPanel = new JPanel();
         searchPanel.setBackground(Color.WHITE);
@@ -91,12 +99,12 @@ public class Phonebook implements ActionListener {
         viewPanel.add(scrollPane, BorderLayout.CENTER);
         viewPanel.add(viewButton, BorderLayout.SOUTH);
 
-        tabbedPane.addTab("View/Search", viewPanel);
+        return viewPanel;
+    }
 
-        // Tab for updating and deleting contacts
-        JPanel updatePanel = new JPanel();
+    private JPanel createUpdatePanel() {
+        JPanel updatePanel = new JPanel(new BorderLayout());
         updatePanel.setBackground(Color.WHITE);
-        updatePanel.setLayout(new BorderLayout());
 
         JButton deleteButton = createButton("Delete Contact", new Color(244, 67, 54));
         deleteButton.addActionListener(e -> deleteContact());
@@ -109,17 +117,13 @@ public class Phonebook implements ActionListener {
         updateControls.add(updateButton);
         updatePanel.add(updateControls, BorderLayout.NORTH);
 
-        tabbedPane.addTab("Update/Delete", updatePanel);
-
-        // Add tabbed pane to frame
-        frame.add(tabbedPane, BorderLayout.CENTER);
-        frame.setVisible(true);
+        return updatePanel;
     }
 
     private JButton createButton(String text, Color color) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(200, 60));
-        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setPreferredSize(new Dimension(300, 60));
+        button.setFont(new Font("Arial", Font.BOLD, 18));
         button.setBackground(color);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
@@ -134,43 +138,54 @@ public class Phonebook implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Add Contact")) {
-            String name = nameField.getText();
-            String phone = phoneField.getText();
+            String name = nameField.getText().trim();
+            String phone = phoneField.getText().trim();
             if (!name.isEmpty() && !phone.isEmpty()) {
-                Contact contact = new Contact(name, phone);
-                contactListModel.addElement(contact);
-                nameField.setText("");
-                phoneField.setText("");
+                if (isUniqueContact(name, phone)) {
+                    Contact contact = new Contact(name, phone);
+                    contacts.add(contact);
+                    sortContacts();
+                    nameField.setText("");
+                    phoneField.setText("");
+                    JOptionPane.showMessageDialog(frame, "Contact added successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
+                }
             } else {
                 JOptionPane.showMessageDialog(frame, "Please enter both name and phone number.");
             }
         }
     }
 
+    private boolean isUniqueContact(String name, String phone) {
+        for (Contact existingContact : contacts) {
+            if (existingContact.getName().equalsIgnoreCase(name) || existingContact.getPhone().equals(phone)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void viewContacts() {
-        contactDisplayArea.setText("");
-        for (int i = 0; i < contactListModel.size(); i++) {
-            contactDisplayArea.append(contactListModel.get(i) + "\n");
-        }
-        if (contactListModel.size() == 0) {
-            contactDisplayArea.setText("No contacts to display.");
-        }
+        sortContacts();
+        updateListModel();
     }
 
     private void searchContacts() {
-        String search = searchField.getText().trim();
+        String search = searchField.getText().trim().toLowerCase();
         DefaultListModel<Contact> filteredModel = new DefaultListModel<>();
-        
-        for (int i = 0; i < contactListModel.size(); i++) {
-            Contact contact = contactListModel.get(i);
-            if (contact.toString().toLowerCase().contains(search.toLowerCase())) {
-                filteredModel.addElement(contact);
+        if (!search.isEmpty()) {
+            for (Contact contact : contacts) {
+                if (contact.toString().toLowerCase().contains(search)) {
+                    filteredModel.addElement(contact);
+                }
             }
-        }
-        
-        contactList.setModel(filteredModel);
-        if (filteredModel.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Contact not found.");
+            contactList.setModel(filteredModel);
+            if (filteredModel.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Contact not found.");
+            }
+        } else {
+            updateListModel();
         }
     }
 
@@ -181,9 +196,9 @@ public class Phonebook implements ActionListener {
                     "Are you sure you want to delete the selected contact?",
                     "Confirm Delete",
                     JOptionPane.YES_NO_OPTION);
-
             if (response == JOptionPane.YES_OPTION) {
-                contactListModel.removeElement(selectedContact);
+                contacts.remove(selectedContact);
+                updateListModel();
                 JOptionPane.showMessageDialog(frame, "Contact deleted successfully.");
             }
         } else {
@@ -194,21 +209,31 @@ public class Phonebook implements ActionListener {
     private void updateContact() {
         Contact selectedContact = contactList.getSelectedValue();
         if (selectedContact != null) {
-            String[] parts = selectedContact.toString().split(", ");
-            String currentName = parts[0].substring(6);
-            String currentPhone = parts[1].substring(7);
-
-            String newName = JOptionPane.showInputDialog(frame, "Edit Name:", currentName);
-            String newPhone = JOptionPane.showInputDialog(frame, "Edit Phone:", currentPhone);
-
-            if (newName != null && newPhone != null) {
+            String newName = JOptionPane.showInputDialog(frame, "Edit Name:", selectedContact.getName());
+            String newPhone = JOptionPane.showInputDialog(frame, "Edit Phone:", selectedContact.getPhone());
+            if (newName != null && newPhone != null && isUniqueContact(newName, newPhone)) {
                 selectedContact.setName(newName);
                 selectedContact.setPhone(newPhone);
-                contactList.repaint();
+                updateListModel();
+                JOptionPane.showMessageDialog(frame, "Contact updated successfully.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
             }
         } else {
             JOptionPane.showMessageDialog(frame, "Please select a contact to update.");
         }
+    }
+
+    private void sortContacts() {
+        contacts.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+    }
+
+    private void updateListModel() {
+        contactListModel.clear();
+        for (Contact contact : contacts) {
+            contactListModel.addElement(contact);
+        }
+        contactList.setModel(contactListModel);
     }
 
     // Contact class
@@ -243,5 +268,3 @@ public class Phonebook implements ActionListener {
         }
     }
 }
-
-
