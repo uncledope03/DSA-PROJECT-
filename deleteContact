@@ -1,0 +1,18 @@
+
+Confirms and deletes the selected contact from the list, updating the model accordingly.
+
+private void deleteContact() {
+    Contact selectedContact = contactList.getSelectedValue();
+    if (selectedContact != null) {
+        int response = JOptionPane.showConfirmDialog(frame,
+                "Are you sure you want to delete the selected contact?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            contactListModel.removeElement(selectedContact);
+            JOptionPane.showMessageDialog(frame, "Contact deleted successfully.");
+        }
+    } else {
+        JOptionPane.showMessageDialog(frame, "Please select a contact to delete.");
+    }
+}
