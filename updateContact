@@ -2,17 +2,18 @@
 Prompts the user to enter new details for the selected contact,
 checks for uniqueness, and updates the contact if valid.
 
+// Data Structure Used: ArrayList<Contact>
 
-private void updateContact() {
+ private void updateContact() {
     Contact selectedContact = contactList.getSelectedValue();
     if (selectedContact != null) {
         String newName = JOptionPane.showInputDialog(frame, "Edit Name:", selectedContact.getName());
         String newPhone = JOptionPane.showInputDialog(frame, "Edit Phone:", selectedContact.getPhone());
         if (newName != null && newPhone != null) {
             if (isUniqueContact(newName, newPhone)) {
-                selectedContact.setName(newName);
-                selectedContact.setPhone(newPhone);
-                contactList.repaint();
+                selectedContact.setName(newName);  // Updates the contact's name
+                selectedContact.setPhone(newPhone);  // Updates the contact's phone
+                contactList.setListData(contacts.toArray(new Contact[0]));
                 JOptionPane.showMessageDialog(frame, "Contact updated successfully.");
             } else {
                 JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
@@ -22,3 +23,4 @@ private void updateContact() {
         JOptionPane.showMessageDialog(frame, "Please select a contact to update.");
     }
 }
+ 
