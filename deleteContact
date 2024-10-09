@@ -1,5 +1,13 @@
 
-Confirms and deletes the selected contact from the list, updating the model accordingly.
+
+// Data Structure Used: ArrayList<Contact>
+
+
+
+
+
+
+
 
 private void deleteContact() {
     Contact selectedContact = contactList.getSelectedValue();
@@ -9,10 +17,12 @@ private void deleteContact() {
                 "Confirm Delete",
                 JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
-            contactListModel.removeElement(selectedContact);
+            contacts.remove(selectedContact);  // Removes contact from ArrayList<Contact>
+            contactList.setListData(contacts.toArray(new Contact[0]));
             JOptionPane.showMessageDialog(frame, "Contact deleted successfully.");
         }
     } else {
         JOptionPane.showMessageDialog(frame, "Please select a contact to delete.");
     }
 }
+ 
