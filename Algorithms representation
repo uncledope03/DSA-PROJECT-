@@ -1,0 +1,97 @@
+Here's a representation of the different modules and their algorithms for the phonebook application, 
+structured as separate components for clarity:
+
+### 1. **Add Contact Module**
+
+**Algorithm:**
+1. **Input**: Get `name` and `phone` from user.
+2. **Check Input**:
+   - If `name` or `phone` is empty:
+     - Display "Please enter both name and phone number."
+     - Exit.
+3. **Check Uniqueness**:
+   - Call `IsUniqueContact(name, phone)`.
+   - If the contact is unique:
+     - Create a new `Contact` object with `name` and `phone`.
+     - Add the new contact to the `contacts` ArrayList.
+     - Call `SortContacts()`.
+     - Display "Contact added successfully."
+   - Else:
+     - Display "Contact with the same name or phone number already exists."
+
+---
+
+### 2. **Search Contacts Module**
+
+**Algorithm:**
+1. **Input**: Get `searchTerm` from user.
+2. **Initialize**: Create an empty list `filteredContacts`.
+3. **Search**:
+   - For each `contact` in `contacts`:
+     - If `contact.name` or `contact.phone` contains `searchTerm`:
+       - Add `contact` to `filteredContacts`.
+4. **Output**:
+   - If `filteredContacts` is not empty:
+     - Display `filteredContacts`.
+   - Else:
+     - Display "Contact not found."
+
+---
+
+### 3. **Delete Contact Module**
+
+**Algorithm:**
+1. **Input**: Get `selectedContact` from user selection.
+2. **Check Selection**:
+   - If `selectedContact` is null:
+     - Display "Please select a contact to delete."
+     - Exit.
+3. **Confirmation**:
+   - Display confirmation dialog "Are you sure you want to delete this contact?"
+   - If the user confirms:
+     - Remove `selectedContact` from `contacts`.
+     - Display "Contact deleted successfully."
+   - Else:
+     - Exit.
+
+---
+
+### 4. **Sort Contacts Module**
+
+**Algorithm:**
+1. **Sort**: Use built-in sort method to sort `contacts` ArrayList by `name`.
+2. **Output**: The `contacts` list is now sorted alphabetically by name.
+
+---
+
+### 5. **Update Contact Module**
+
+**Algorithm:**
+1. **Input**: Get `selectedContact` from user selection.
+2. **Check Selection**:
+   - If `selectedContact` is null:
+     - Display "Please select a contact to update."
+     - Exit.
+3. **Input New Values**:
+   - Prompt user for `newName` and `newPhone`.
+4. **Check Uniqueness**:
+   - If `newName` and `newPhone` are not null:
+     - Call `IsUniqueContact(newName, newPhone)`.
+     - If the contact is unique:
+       - Set `selectedContact.name` to `newName`.
+       - Set `selectedContact.phone` to `newPhone`.
+       - Display "Contact updated successfully."
+     - Else:
+       - Display "Contact with the same name or phone number already exists."
+
+---
+
+### Helper Module: **IsUniqueContact**
+
+**Algorithm:**
+1. **Input**: Get `name` and `phone`.
+2. **Check Duplicates**:
+   - For each `contact` in `contacts`:
+     - If `contact.name` equals `name` or `contact.phone` equals `phone`:
+       - Return false (not unique).
+3. **Return true**: If no duplicates are found.
