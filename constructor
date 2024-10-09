@@ -1,0 +1,51 @@
+
+
+
+The constructor initializes the JFrame and its 
+components, sets up the layout, and 
+  creates three tabs for different
+functionalities (adding, viewing, updating/deleting contacts).
+
+
+
+
+
+
+
+
+public Phonebook() {
+    // Initialize the frame
+    frame = new JFrame("Contact Book");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(600, 500);
+    frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+
+    // Initialize components
+    nameField = new JTextField(15);
+    phoneField = new JTextField(15);
+    searchField = new JTextField(15);
+
+    contactListModel = new DefaultListModel<>();
+    contactList = new JList<>(contactListModel);
+    contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    JScrollPane scrollPane = new JScrollPane(contactList);
+
+    // Create tabbed pane
+    JTabbedPane tabbedPane = new JTabbedPane();
+
+    // Tab for adding contacts
+    JPanel addPanel = createAddPanel();
+    tabbedPane.addTab("Add Contact", addPanel);
+
+    // Tab for viewing and searching contacts
+    JPanel viewPanel = createViewPanel(scrollPane);
+    tabbedPane.addTab("View/Search", viewPanel);
+
+    // Tab for updating and deleting contacts
+    JPanel updatePanel = createUpdatePanel();
+    tabbedPane.addTab("Update/Delete", updatePanel);
+
+    // Add tabbed pane to frame
+    frame.add(tabbedPane, BorderLayout.CENTER);
+    frame.setVisible(true);
+}
