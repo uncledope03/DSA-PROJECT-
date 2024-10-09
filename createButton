@@ -1,0 +1,15 @@
+A utility method for creating a button with specific dimensions and styles,
+reducing code duplication.
+
+
+
+private JButton createButton(String text, Color color) {
+    JButton button = new JButton(text);
+    button.setPreferredSize(new Dimension(300, 60)); // Increase width and height
+    button.setFont(new Font("Arial", Font.BOLD, 18)); // Increase font size
+    button.setBackground(color);
+    button.setForeground(Color.WHITE);
+    button.setFocusPainted(false);
+    button.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    return button;
+}
