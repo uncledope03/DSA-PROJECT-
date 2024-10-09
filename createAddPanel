@@ -1,0 +1,33 @@
+
+Creates and returns a panel for adding new contacts,
+including text fields for name and phone, and a button to add the contact.
+
+
+private JPanel createAddPanel() {
+    JPanel addPanel = new JPanel(new GridBagLayout());
+    addPanel.setBackground(Color.WHITE);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    addPanel.add(new JLabel("Name:"), gbc);
+    gbc.gridx = 1;
+    addPanel.add(nameField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy = 1;
+    addPanel.add(new JLabel("Phone:"), gbc);
+    gbc.gridx = 1;
+    addPanel.add(phoneField, gbc);
+
+    JButton addButton = createButton("Add Contact", new Color(76, 175, 80));
+    addButton.addActionListener(this);
+    gbc.gridwidth = 2;
+    gbc.gridx = 0;
+    gbc.gridy = 2;
+    addPanel.add(addButton, gbc);
+
+    return addPanel;
+}
