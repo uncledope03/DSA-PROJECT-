@@ -1,0 +1,16 @@
+
+
+
+
+
+
+
+private void sortContacts() {
+    ArrayList<Contact> sortedContacts = new ArrayList<>();
+    for (int i = 0; i < contactListModel.size(); i++) {
+        sortedContacts.add(contactListModel.get(i));
+    }
+    sortedContacts.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+    contactListModel.clear();
+    for (Contact contact : sortedContacts) {
+        contactListModel.addElement(contact);
