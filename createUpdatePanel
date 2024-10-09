@@ -1,4 +1,4 @@
-
+This panel allows users to update or delete existing contacts.
 
 
 private JPanel createUpdatePanel() {
