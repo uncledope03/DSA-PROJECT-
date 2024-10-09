@@ -1,0 +1,24 @@
+
+Prompts the user to enter new details for the selected contact,
+checks for uniqueness, and updates the contact if valid.
+
+
+private void updateContact() {
+    Contact selectedContact = contactList.getSelectedValue();
+    if (selectedContact != null) {
+        String newName = JOptionPane.showInputDialog(frame, "Edit Name:", selectedContact.getName());
+        String newPhone = JOptionPane.showInputDialog(frame, "Edit Phone:", selectedContact.getPhone());
+        if (newName != null && newPhone != null) {
+            if (isUniqueContact(newName, newPhone)) {
+                selectedContact.setName(newName);
+                selectedContact.setPhone(newPhone);
+                contactList.repaint();
+                JOptionPane.showMessageDialog(frame, "Contact updated successfully.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(frame, "Please select a contact to update.");
+    }
+}
