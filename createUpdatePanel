@@ -1,0 +1,20 @@
+
+
+
+private JPanel createUpdatePanel() {
+    JPanel updatePanel = new JPanel(new BorderLayout());
+    updatePanel.setBackground(Color.WHITE);
+
+    JButton deleteButton = createButton("Delete Contact", new Color(244, 67, 54));
+    deleteButton.addActionListener(e -> deleteContact());
+    JButton updateButton = createButton("Update Contact", new Color(156, 39, 176));
+    updateButton.addActionListener(e -> updateContact());
+
+    JPanel updateControls = new JPanel();
+    updateControls.setBackground(Color.WHITE);
+    updateControls.add(deleteButton);
+    updateControls.add(updateButton);
+    updatePanel.add(updateControls, BorderLayout.NORTH);
+
+    return updatePanel;
+}
