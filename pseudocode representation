@@ -1,0 +1,92 @@
+pseudocode representation
+
+
+Add Contact
+
+METHOD AddContact(name, phone)
+    IF name AND phone are NOT empty THEN
+        IF IsUniqueContact(name, phone) THEN
+            CREATE new Contact object with name and phone
+            ADD new Contact to contacts (ArrayList)
+            CALL SortContacts()
+            DISPLAY "Contact added successfully"
+        ELSE
+            DISPLAY "Contact with the same name or phone number already exists"
+        END IF
+    ELSE
+        DISPLAY "Please enter both name and phone number"
+    END IF
+END METHOD
+
+
+ Search Contacts
+
+
+METHOD SearchContacts(searchTerm)
+    CREATE empty List for filteredContacts
+    FOR each contact IN contacts (ArrayList)
+        IF contact's name OR phone CONTAINS searchTerm THEN
+            ADD contact to filteredContacts
+        END IF
+    END FOR
+    IF filteredContacts is NOT empty THEN
+        DISPLAY filteredContacts
+    ELSE
+        DISPLAY "Contact not found"
+    END IF
+END METHOD
+
+
+Delete Contact
+
+METHOD DeleteContact(selectedContact)
+    IF selectedContact IS NOT NULL THEN
+        DISPLAY confirmation dialog "Are you sure you want to delete this contact?"
+        IF user CONFIRMS deletion THEN
+            REMOVE selectedContact from contacts (ArrayList)
+            DISPLAY "Contact deleted successfully"
+        END IF
+    ELSE
+        DISPLAY "Please select a contact to delete"
+    END IF
+END METHOD
+
+Sort Contacts
+
+METHOD SortContacts()
+    SORT contacts (ArrayList) ALPHABETICALLY by contact name
+END METHOD 
+
+
+ Update Contact
+
+METHOD UpdateContact(selectedContact)
+    IF selectedContact IS NOT NULL THEN
+        PROMPT user for newName and newPhone
+        IF newName AND newPhone are NOT NULL THEN
+            IF IsUniqueContact(newName, newPhone) THEN
+                SET selectedContact's name to newName
+                SET selectedContact's phone to newPhone
+                DISPLAY "Contact updated successfully"
+            ELSE
+                DISPLAY "Contact with the same name or phone number already exists"
+            END IF
+        END IF
+    ELSE
+        DISPLAY "Please select a contact to update"
+    END IF
+END METHOD
+
+Helper Method: IsUniqueContact
+
+
+
+METHOD IsUniqueContact(name, phone)
+    FOR each contact IN contacts (ArrayList)
+        IF contact's name EQUALS name OR contact's phone EQUALS phone THEN
+            RETURN FALSE
+        END IF
+    END FOR
+    RETURN TRUE
+END METHOD
+
