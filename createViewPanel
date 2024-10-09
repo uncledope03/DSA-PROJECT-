@@ -1,0 +1,27 @@
+
+Sets up a panel for viewing and searching contacts. 
+Includes a search bar and buttons for viewing all contacts or searching specific ones.
+
+
+
+
+private JPanel createViewPanel(JScrollPane scrollPane) {
+    JPanel viewPanel = new JPanel(new BorderLayout());
+    viewPanel.setBackground(Color.WHITE);
+
+    JPanel searchPanel = new JPanel();
+    searchPanel.setBackground(Color.WHITE);
+    JButton viewButton = createButton("View Contacts", new Color(33, 150, 243));
+    viewButton.addActionListener(e -> viewContacts());
+    JButton searchButton = createButton("Search", new Color(255, 193, 7));
+    searchButton.addActionListener(e -> searchContacts());
+
+    searchPanel.add(new JLabel("Search:"));
+    searchPanel.add(searchField);
+    searchPanel.add(searchButton);
+    viewPanel.add(searchPanel, BorderLayout.NORTH);
+    viewPanel.add(scrollPane, BorderLayout.CENTER);
+    viewPanel.add(viewButton, BorderLayout.SOUTH);
+
+    return viewPanel;
+}
