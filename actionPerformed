@@ -1,0 +1,24 @@
+// Data Structure Used: ArrayList<Contact>
+
+@Override
+public void actionPerformed(ActionEvent e) {
+    if (e.getActionCommand().equals("Add Contact")) {
+        String name = nameField.getText().trim();
+        String phone = phoneField.getText().trim();
+        if (!name.isEmpty() && !phone.isEmpty()) {
+            if (isUniqueContact(name, phone)) {
+                Contact contact = new Contact(name, phone);
+                contacts.add(contact);  // Adds contact to the ArrayList<Contact>
+                sortContacts();  // Keeps the list sorted
+                nameField.setText("");
+                phoneField.setText("");
+                JOptionPane.showMessageDialog(frame, "Contact added successfully.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Please enter both name and phone number.");
+        }
+    }
+}
+ 
