@@ -1,8 +1,0 @@
-// Data Structure Used: ArrayList<Contact>
-
-
-private void sortContacts() {
-    contacts.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));  // Sorts the ArrayList<Contact>
-    contactList.setListData(contacts.toArray(new Contact[0]));  // Updates the display with sorted list
-}
- 
