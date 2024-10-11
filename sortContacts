@@ -1,0 +1,19 @@
+guys go through that
+// Data Structure Used: ArrayList<Contact>
+
+
+private void sortContacts() {
+    contacts.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));  // Sorts the ArrayList<Contact>
+    contactList.setListData(contacts.toArray(new Contact[0]));  // Updates the display with sorted list
+}
+ pseodocode representation of this code
+ 
+ FUNCTION sortContacts
+    // Sort the contacts by name, ignoring case
+    CALL sort(contacts) WITH COMPARISON FUNCTION (c1, c2)
+        RETURN c1.name.compareToIgnoreCase(c2.name)
+    END CALL
+
+    // Update the displayed contact list with the sorted contacts
+    CALL contactList.setListData(CONVERT contacts TO ARRAY)
+END FUNCTION
