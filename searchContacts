@@ -1,0 +1,43 @@
+I tried to do the searchContacts, just go through.
+// Data Structure Used: ArrayList<Contact> 
+ 
+private void searchContacts() {
+    String search = searchField.getText().trim().toLowerCase();
+    if (!search.isEmpty()) {
+        ArrayList<Contact> filteredContacts = new ArrayList<>();
+        for (Contact contact : contacts) {  // Iterates over ArrayList<Contact>
+            if (contact.toString().toLowerCase().contains(search)) {
+                filteredContacts.add(contact);  // Adds matching contacts to a temporary list
+            }
+        }
+        contactList.setListData(filteredContacts.toArray(new Contact[0]));
+        if (filteredContacts.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Contact not found.");
+        }
+    } else {
+        contactList.setListData(contacts.toArray(new Contact[0]));  // Resets list to all contacts
+    }
+}
+
+pseudocode representation of the code.
+FUNCTION searchContacts()
+    search = LOWERCASE(TRIM(searchField.getText()))
+    
+    IF search is not empty THEN
+        CREATE empty ArrayList called filteredContacts
+        
+        FOR EACH contact IN contacts DO
+            IF LOWERCASE(contact.toString()) CONTAINS search THEN
+                ADD contact TO filteredContacts
+            END IF
+        END FOR
+        
+        UPDATE contactList WITH filteredContacts
+        
+        IF filteredContacts is empty THEN
+            DISPLAY MESSAGE "Contact not found."
+        END IF
+    ELSE
+        UPDATE contactList WITH all contacts
+    END IF
+END FUNCTION
