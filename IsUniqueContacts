@@ -1,0 +1,19 @@
+IsUniqueContact
+METHOD IsUniqueContact(name, phone)
+    FOR each contact IN contacts (ArrayList)
+        IF contact's name EQUALS name OR contact's phone EQUALS phone THEN
+            RETURN FALSE
+        END IF
+    END FOR
+    RETURN TRUE
+END METHOD
+
+Pseudocode representation of the above code
+FUNCTION IsUniqueContact(name, phone)
+    FOR EACH contact IN contacts
+        IF contact.name = name OR contact.phone = phone THEN
+            RETURN false
+        END IF
+    END FOR
+    RETURN true
+END FUNCTION
