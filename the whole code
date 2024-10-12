@@ -1,0 +1,300 @@
+the whole code 
+
+
+
+  package phonebook;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.ArrayList;
+
+public class Phonebook implements ActionListener {
+
+    private JFrame frame;
+    private JTextField nameField, phoneField, searchField;
+    private ArrayList<Contact> contacts;
+    private JList<Contact> contactList;
+    private DefaultListModel<Contact> contactListModel;
+
+    public Phonebook() {
+        // Initialize the frame
+        frame = new JFrame("Contact Book");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 500);
+        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+
+        // Initialize text fields
+        nameField = new JTextField(15);
+        phoneField = new JTextField(15);
+        searchField = new JTextField(15);
+
+        // Add KeyListeners for input validation
+        nameField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                // Allow only letters and whitespace
+                if (!Character.isLetter(c) && !Character.isWhitespace(c)) {
+                    e.consume(); // Ignore non-letter input
+                }
+            }
+        });
+
+        phoneField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                // Allow only digits
+                if (!Character.isDigit(c)) {
+                    e.consume(); // Ignore non-digit input
+                }
+            }
+        });
+
+        // Initialize contacts list and UI components
+        contacts = new ArrayList<>();
+        contactListModel = new DefaultListModel<>();
+        contactList = new JList<>(contactListModel);
+        contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane scrollPane = new JScrollPane(contactList);
+
+        // Create tabbed pane for different functionalities
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Add Contact", createAddPanel());
+        tabbedPane.addTab("View/Search", createViewPanel(scrollPane));
+        tabbedPane.addTab("Update/Delete", createUpdatePanel());
+
+        // Add the tabbed pane to the main frame
+        frame.add(tabbedPane, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
+
+    private JPanel createAddPanel() {
+        JPanel addPanel = new JPanel(new GridBagLayout());
+        addPanel.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        addPanel.add(new JLabel("Name:"), gbc);
+        gbc.gridx = 1;
+        addPanel.add(nameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        addPanel.add(new JLabel("Phone:"), gbc);
+        gbc.gridx = 1;
+        addPanel.add(phoneField, gbc);
+
+        JButton addButton = createButton("Add Contact", new Color(76, 175, 80));
+        addButton.addActionListener(this);
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        addPanel.add(addButton, gbc);
+
+        return addPanel;
+    }
+
+    private JPanel createViewPanel(JScrollPane scrollPane) {
+        JPanel viewPanel = new JPanel(new BorderLayout());
+        viewPanel.setBackground(Color.WHITE);
+
+        JPanel searchPanel = new JPanel();
+        searchPanel.setBackground(Color.WHITE);
+        JButton viewButton = createButton("View Contacts", new Color(33, 150, 243));
+        viewButton.addActionListener(e -> viewContacts());
+        JButton searchButton = createButton("Search", new Color(255, 193, 7));
+        searchButton.addActionListener(e -> searchContacts());
+
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        viewPanel.add(searchPanel, BorderLayout.NORTH);
+        viewPanel.add(scrollPane, BorderLayout.CENTER);
+        viewPanel.add(viewButton, BorderLayout.SOUTH);
+
+        return viewPanel;
+    }
+
+    private JPanel createUpdatePanel() {
+        JPanel updatePanel = new JPanel(new BorderLayout());
+        updatePanel.setBackground(Color.WHITE);
+
+        JButton deleteButton = createButton("Delete Contact", new Color(244, 67, 54));
+        deleteButton.addActionListener(e -> deleteContact());
+        JButton updateButton = createButton("Update Contact", new Color(156, 39, 176));
+        updateButton.addActionListener(e -> updateContact());
+
+        JPanel updateControls = new JPanel();
+        updateControls.setBackground(Color.WHITE);
+        updateControls.add(deleteButton);
+        updateControls.add(updateButton);
+        updatePanel.add(updateControls, BorderLayout.NORTH);
+
+        return updatePanel;
+    }
+
+    private JButton createButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(300, 60));
+        button.setFont(new Font("Arial", Font.BOLD, 18));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        return button;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Phonebook::new);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("Add Contact")) {
+            String name = nameField.getText().trim();
+            String phone = phoneField.getText().trim();
+            if (!name.isEmpty() && !phone.isEmpty()) {
+                if (isUniqueContact(name, phone)) {
+                    Contact contact = new Contact(name, phone);
+                    contacts.add(contact);
+                    sortContacts();
+                    nameField.setText("");
+                    phoneField.setText("");
+                    JOptionPane.showMessageDialog(frame, "Contact added successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please enter both name and phone number.");
+            }
+        }
+    }
+
+    private boolean isUniqueContact(String name, String phone) {
+        for (Contact existingContact : contacts) {
+            if (existingContact.getName().equalsIgnoreCase(name) || existingContact.getPhone().equals(phone)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void viewContacts() {
+        sortContacts();
+        updateListModel();
+    }
+
+    private void searchContacts() {
+        String search = searchField.getText().trim().toLowerCase();
+        DefaultListModel<Contact> filteredModel = new DefaultListModel<>();
+        if (!search.isEmpty()) {
+            for (Contact contact : contacts) {
+                if (contact.toString().toLowerCase().contains(search)) {
+                    filteredModel.addElement(contact);
+                }
+            }
+            contactList.setModel(filteredModel);
+            if (filteredModel.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Contact not found.");
+            }
+        } else {
+            updateListModel();
+        }
+    }
+
+    private void deleteContact() {
+        Contact selectedContact = contactList.getSelectedValue();
+        if (selectedContact != null) {
+            int response = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to delete the selected contact?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                contacts.remove(selectedContact);
+                updateListModel();
+                JOptionPane.showMessageDialog(frame, "Contact deleted successfully.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Please select a contact to delete.");
+        }
+    }
+
+    private void updateContact() {
+        Contact selectedContact = contactList.getSelectedValue();
+        if (selectedContact != null) {
+            String newName = JOptionPane.showInputDialog(frame, "Edit Name:", selectedContact.getName());
+            String newPhone = JOptionPane.showInputDialog(frame, "Edit Phone:", selectedContact.getPhone());
+            if (newName != null && newPhone != null && isUniqueContact(newName, newPhone, selectedContact)) {
+                selectedContact.setName(newName);
+                selectedContact.setPhone(newPhone);
+                updateListModel();
+                JOptionPane.showMessageDialog(frame, "Contact updated successfully.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Contact with the same name or phone number already exists.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame, "Please select a contact to update.");
+        }
+    }
+
+    private boolean isUniqueContact(String name, String phone, Contact currentContact) {
+        for (Contact existingContact : contacts) {
+            // Skip the current contact being updated
+            if (existingContact != currentContact &&
+                (existingContact.getName().equalsIgnoreCase(name) || existingContact.getPhone().equals(phone))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void sortContacts() {
+        contacts.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+    }
+
+    private void updateListModel() {
+        contactListModel.clear();
+        for (Contact contact : contacts) {
+            contactListModel.addElement(contact);
+        }
+        contactList.setModel(contactListModel);
+    }
+
+    // Contact class
+    static class Contact {
+        private String name;
+        private String phone;
+
+        public Contact(String name, String phone) {
+            this.name = name;
+            this.phone = phone;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        @Override
+        public String toString() {
+            return name + " - " + phone;
+        }
+    }
+}
+
