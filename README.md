@@ -1,3 +1,7 @@
+
+[DSA Group Project 2.pdf](https://github.com/user-attachments/files/17357141/DSA.Group.Project.2.pdf)
+
+
 # DSA-PROJECT-   discription
 Here’s the breakdown of each method, now including the data structure used:
 
@@ -78,7 +82,7 @@ Here’s the breakdown of each method, now including the data structure used:
 - **Purpose**: Represents a contact with a name and phone number. This class provides basic getter and setter methods for managing contact data and a `toString` method for easy display within the list.
 
 
-[DSA Group Project 2.pdf](https://github.com/user-attachments/files/17357132/DSA.Group.Project.2.pdf)
+
 
 
   
